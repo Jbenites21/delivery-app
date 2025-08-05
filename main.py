@@ -12,7 +12,7 @@ async def login(user: usermodels.UserLogin):
         "status": True,
         "message": "Login successful",
         "token": "1234567890abcdef",
-        "username": user.username
+        "username": user.email
     }
 
 @app.post("/registrar")
