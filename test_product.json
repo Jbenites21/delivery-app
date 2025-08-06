@@ -1,0 +1,8 @@
+{
+    "nombre": "Pizza Margherita",
+    "descripcion": "Pizza clásica con tomate, mozzarella y albahaca",
+    "precio": 15.99,
+    "categoria": "pizzas",
+    "disponible": true,
+    "imagen_url": "https://example.com/pizza.jpg"
+}
