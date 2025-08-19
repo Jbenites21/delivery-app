@@ -12,7 +12,7 @@ from fastapi import FastAPI
 # Añadir el directorio raíz al path para las importaciones
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-# Importar el router y modelos de payment
+# Importar el router y modelos de payment commit
 from infraestructure.api.routers.payment import router, process_payment, Item, PaymentRequest, PaymentResponse
 
 
