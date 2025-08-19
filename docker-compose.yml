@@ -1,31 +1,33 @@
+version: '3.8'
+
 services:
+  # Servicio para la base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    env_file:
+      - .env # Utiliza las variables de entorno de tu archivo .env
+    environment:
+      # Variables de entorno para MySQL, necesarias para el contenedor
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} # Contraseña de usuario 'root'
+      - MYSQL_DATABASE=${MYSQL_DB}                 # Nombre de la base de datos a crear
+    ports:
+      - "3307:3306" # Mapea el puerto del contenedor al host para que MySQL Workbench se conecte
+    volumes:
+      - ./mysql_init:/docker-entrypoint-initdb.d
+
+  # Servicio para tu aplicación de FastAPI
   app:
     build: .
-    depends_on:
-      - redis
+    container_name: delivery_api
     restart: on-failure
     ports:
       - "8000:8000"
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_DB=0
-    networks:
-      - red_local
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    networks:
-      - red_local
-    command: redis-server --appendonly yes
     volumes:
-      - redis_data:/data
-
-volumes:
-  redis_data:
-
-networks:
-  red_local:
-    driver: bridge
+      - .:/app # Mapea tu código para desarrollo
+      - ./uploads:/app/uploads
+    depends_on:
+      - db # Asegura que la base de datos se inicie antes que la API
+    env_file:
+      - .env # Las variables de la base de datos también son accesibles para la API

@@ -1,29 +1,23 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
-
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
 class Settings(BaseSettings):
-    """Configuración de la aplicación usando variables de entorno"""
-    
-    # Redis
-    redis_host: str = "localhost"
-    redis_port: int = 6379
-    redis_db: int = 0
-    redis_password: Optional[str] = None
-    
-    # Aplicación
-    app_host: str = "0.0.0.0"
-    app_port: int = 8000
-    app_debug: bool = True
-    
-    # Seguridad
-    secret_key: str = "default-secret-key-change-in-production"
-    token_expire_hours: int = 24
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    """Configuración de la aplicación"""
+    #MYSQL_USER: str = Field(..., env="MYSQL_USER")
+    #MYSQL_PASSWORD: str = Field(..., env="MYSQL_PASSWORD")
+    MYSQL_HOST: str = Field(..., env="MYSQL_HOST")
+    MYSQL_PORT: int = Field(..., env="MYSQL_PORT")
+    MYSQL_DATABASE: str = Field(..., env="MYSQL_DATABASE")
+    MYSQL_ROOT_PASSWORD: str = Field(..., env="MYSQL_ROOT_PASSWORD")
 
+    @property
+    def DATABASE_URL(self) -> str:
+        """Genera la URL de conexión a la base de datos MySQL"""
+        return f"mysql+pymysql://root:{self.MYSQL_ROOT_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}"
 
-# Instancia global de configuración
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
+
 settings = Settings()
